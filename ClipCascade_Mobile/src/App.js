@@ -1225,8 +1225,8 @@ export default function App() {
               <View style={styles.row}>
                 <InfoLabel
                   style={styles.label}
-                  label="Start on device restart (disable if the READ_LOGS permission is granted via ADB):"
-                  info={"Starts ClipCascade after your device restarts. Off by default.\n\nNote: keep this disabled if you granted READ_LOGS via ADB for automatic clipboard monitoring, to avoid interfering with the permission prompt. After restarting, open ClipCascade manually and allow the log-access prompt when shown."}
+                  label="Start on device restart:"
+                  info={"Starts ClipCascade after your device restarts. Off by default.\n\nAndroid 10 and above requires Shizuku for automatic clipboard monitoring. Keep Shizuku running after restarting the device, then grant ClipCascade Shizuku access when prompted."}
                 />
                 <CheckBox
                   disabled={isLoggingIn}
@@ -1465,7 +1465,7 @@ export default function App() {
                     { marginTop: 5, fontSize: 15, fontStyle: 'italic' },
                   ]}
                 >
-                  There's also a workaround to enable clipboard sharing in the
+                  Shizuku enables automatic clipboard sharing in the
                   background. Scroll down for setup instructions.
                 </Text>
               </View>
@@ -1520,7 +1520,7 @@ export default function App() {
                 </Text>
               </TouchableOpacity>
 
-              {/* ADB Commands Section */}
+              {/* Shizuku Setup Section */}
               <View style={{ marginTop: 20 }}>
                 <Text
                   style={[
@@ -1531,48 +1531,21 @@ export default function App() {
                   Automatic Clipboard Monitoring Setup:
                 </Text>
                 <Text style={styles.label}>
-                  On rooted/non-rooted devices, to enable automatic clipboard
-                  monitoring you need to execute these 3 ADB commands:
+                  On Android 10 and above, ClipCascade uses Shizuku for automatic
+                  background clipboard monitoring. No READ_LOGS or "Draw over
+                  other apps" permission is required.
                 </Text>
                 <View style={{ marginTop: 10, marginLeft: 15 }}>
                   <Text style={styles.label}>
-                    1. Enable the READ_LOGS permission:
+                    1. Install and start the Shizuku app.
                   </Text>
-                  <Text
-                    selectable
-                    style={[
-                      styles.label,
-                      { fontWeight: 'bold', marginLeft: 15 },
-                    ]}
-                  >
-                    {`> adb -d shell pm grant com.clipcascade android.permission.READ_LOGS`}
-                  </Text>
-
                   <Text style={styles.label}>
-                    2. Allow "Drawing over other apps", also accessible from
-                    Settings:
+                    2. Open ClipCascade and grant it Shizuku access when the
+                    permission dialog appears.
                   </Text>
-                  <Text
-                    selectable
-                    style={[
-                      styles.label,
-                      { fontWeight: 'bold', marginLeft: 15 },
-                    ]}
-                  >
-                    {`> adb -d shell appops set com.clipcascade SYSTEM_ALERT_WINDOW allow`}
-                  </Text>
-
                   <Text style={styles.label}>
-                    3. Kill the app for the new permissions to take effect:
-                  </Text>
-                  <Text
-                    selectable
-                    style={[
-                      styles.label,
-                      { fontWeight: 'bold', marginLeft: 15 },
-                    ]}
-                  >
-                    {`> adb -d shell am force-stop com.clipcascade`}
+                    3. Keep Shizuku running while ClipCascade monitors the
+                    clipboard in the background.
                   </Text>
                 </View>
               </View>
