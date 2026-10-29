@@ -1,5 +1,18 @@
 # <img src="https://github.com/user-attachments/assets/710bb1c3-0eda-48cf-819a-e066bde3a3ec" alt="ClipCascade Logo" width="34" /> ClipCascade
 
+> [!WARNING]
+> **Shizuku Android Support / Shizuku 安卓支持**
+>
+> **This Shizuku implementation was modified by AI and is for reference only. It has not been officially verified for stability, security, or compatibility on every device.** / **此处的 Shizuku 实现由 AI 修改，仅供参考；尚未对所有设备的稳定性、安全性和兼容性进行官方验证。**
+>
+> On Android 10 and above, enable background clipboard monitoring with Shizuku: install and start Shizuku, then grant ClipCascade Shizuku permission. Keep Shizuku running while ClipCascade monitors the clipboard. This implementation does not require `READ_LOGS` or `SYSTEM_ALERT_WINDOW`.
+>
+> Android 10 及以上版本可通过 Shizuku 启用后台剪贴板监听：安装并启动 Shizuku，然后授予 ClipCascade Shizuku 权限。ClipCascade 后台监听剪贴板时请保持 Shizuku 运行。此实现不需要 `READ_LOGS` 或 `SYSTEM_ALERT_WINDOW` 权限。
+>
+> For the current app design, Shizuku is an Android clipboard-monitoring integration rather than a replacement for the ClipCascade server, authentication, encryption, or sync connection.
+>
+> 在当前应用设计中，Shizuku 仅用于 Android 后台剪贴板监听，不替代 ClipCascade 的服务器、登录认证、加密或同步连接功能。
+
 **ClipCascade** is a lightweight, open-source utility that automatically syncs your clipboard across multiple devices—no manual input required. It ensures seamless sharing with robust end-to-end encryption, providing a secure and reliable clipboard experience across workstations.
 
 **No Server? No Problem!** Instantly sync your clipboard using the **Live Community Server** at **[clipcascade.sathvik.dev](http://clipcascade.sathvik.dev/)**—**no setup needed**. Just create an account and start sharing your clipboard across devices in seconds!

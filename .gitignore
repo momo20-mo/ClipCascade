@@ -8,3 +8,5 @@ screenshots/
 # Python bytecode caches
 __pycache__/
 *.py[cod]
+/docker/android-builder/artifacts/
+/docker/android-builder/release-assets/
