@@ -76,7 +76,6 @@ android {
     buildFeatures {
         aidl true
     }
-
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
@@ -86,8 +85,8 @@ android {
         applicationId "com.clipcascade"
         minSdkVersion 26
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 30300
-        versionName "3.3.0"
+        versionCode 30401
+        versionName "3.4.1"
     }
     signingConfigs {
         debug {
