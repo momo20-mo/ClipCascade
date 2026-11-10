@@ -3,11 +3,11 @@ package com.clipcascade
 import android.content.ComponentName
 import android.content.ServiceConnection
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Binder
 import android.os.Handler
 import android.os.IBinder
 import android.os.Looper
-import com.facebook.react.bridge.Arguments
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.WritableMap
 import rikka.shizuku.Shizuku
@@ -243,29 +243,34 @@ class ShizukuClipboardManager(
             if (!isServiceHealthy(current)) return null
 
             val mimeType = current.primaryClipMimeType.orEmpty()
-            val text = current.primaryClipText.orEmpty()
-            val uri = current.primaryClipUri.orEmpty()
-            val params = Arguments.createMap()
-
-            when {
-                mimeType.startsWith("text/") && text.isNotEmpty() -> {
-                    params.putString("content", text)
-                    params.putString("type", "text")
-                }
-                uri.isNotEmpty() -> {
-                    params.putString("content", uri)
-                    params.putString(
-                        "type",
-                        if (mimeType.startsWith("image/")) "image" else "files"
-                    )
-                }
-                text.isNotEmpty() -> {
-                    params.putString("content", text)
-                    params.putString("type", "text")
-                }
-                else -> return null
+            val itemCount = current.primaryClipItemCount
+            val itemUris = (0 until itemCount).map { current.getPrimaryClipItemUri(it).orEmpty() }
+            val attachmentUris = itemUris.filter { value ->
+                val scheme = Uri.parse(value).scheme
+                scheme == "content" || scheme == "file"
             }
-            params
+            val content = when {
+                attachmentUris.isNotEmpty() ->
+                    ClipboardContent(
+                        if (attachmentUris.size == 1 && mimeType.startsWith("image/")) "image" else "files",
+                        attachmentUris
+                    )
+                else -> {
+                    val text = (0 until itemCount).mapNotNull { index ->
+                        val itemText = current.getPrimaryClipItemText(index).orEmpty()
+                        (itemText.ifEmpty { itemUris[index] }).takeIf { it.isNotEmpty() }
+                    }.joinToString("\n")
+                    text.takeIf { it.isNotEmpty() }
+                        ?.let { ClipboardContent("text", listOf(it)) }
+                }
+            } ?: return null
+            val update = ClipboardObservations.observeShizuku(
+                content,
+                current.primaryClipTimestamp,
+                current.primaryClipWriteId
+            ) ?: return null
+            if (!update.isEcho) PendingShares.clear()
+            update.toMap()
         } catch (e: Exception) {
             android.util.Log.w(TAG, "Failed to read clipboard through Shizuku", e)
             null

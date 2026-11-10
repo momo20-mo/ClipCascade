@@ -9,5 +9,10 @@ interface IClipboardUserService {
     boolean setClipboardChangedCallback(IBinder callerToken, IClipboardChangedCallback callback) = 4;
     void clearClipboardChangedCallback(IBinder callerToken) = 5;
     boolean isClipboardServiceHealthy() = 6;
+    long getPrimaryClipTimestamp() = 7;
+    String getPrimaryClipWriteId() = 8;
+    int getPrimaryClipItemCount() = 9;
+    String getPrimaryClipItemText(int index) = 10;
+    String getPrimaryClipItemUri(int index) = 11;
     void destroy() = 16777114;
 }

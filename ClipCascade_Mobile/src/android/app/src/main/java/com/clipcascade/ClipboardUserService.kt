@@ -186,6 +186,66 @@ class ClipboardUserService : IClipboardUserService.Stub() {
         }
     }
 
+    override fun getPrimaryClipTimestamp(): Long {
+        return try {
+            val clipboard = getClipboardService() ?: return 0L
+            val description =
+                findAndInvokeMethod(clipboard, "getPrimaryClipDescription") as? ClipDescription
+            description?.timestamp ?: 0L
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "getPrimaryClipTimestamp failed", e)
+            0L
+        }
+    }
+
+    override fun getPrimaryClipWriteId(): String {
+        return try {
+            val clipboard = getClipboardService() ?: return ""
+            val description =
+                findAndInvokeMethod(clipboard, "getPrimaryClipDescription") as? ClipDescription
+            description?.extras?.getString(ClipboardObservations.OWN_WRITE_KEY).orEmpty()
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "getPrimaryClipWriteId failed", e)
+            ""
+        }
+    }
+
+    override fun getPrimaryClipItemCount(): Int {
+        return try {
+            val clipboard = getClipboardService() ?: return 0
+            (findAndInvokeMethod(clipboard, "getPrimaryClip") as? ClipData)?.itemCount ?: 0
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "getPrimaryClipItemCount failed", e)
+            0
+        }
+    }
+
+    override fun getPrimaryClipItemText(index: Int): String {
+        return try {
+            val clipboard = getClipboardService() ?: return ""
+            val clip = findAndInvokeMethod(clipboard, "getPrimaryClip") as? ClipData
+                ?: return ""
+            if (index in 0 until clip.itemCount) clip.getItemAt(index).text?.toString().orEmpty()
+            else ""
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "getPrimaryClipItemText failed", e)
+            ""
+        }
+    }
+
+    override fun getPrimaryClipItemUri(index: Int): String {
+        return try {
+            val clipboard = getClipboardService() ?: return ""
+            val clip = findAndInvokeMethod(clipboard, "getPrimaryClip") as? ClipData
+                ?: return ""
+            if (index in 0 until clip.itemCount) clip.getItemAt(index).uri?.toString().orEmpty()
+            else ""
+        } catch (e: Exception) {
+            android.util.Log.e(TAG, "getPrimaryClipItemUri failed", e)
+            ""
+        }
+    }
+
     override fun setClipboardChangedCallback(
         callerToken: IBinder,
         callback: IClipboardChangedCallback

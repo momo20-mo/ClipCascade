@@ -67,39 +67,23 @@ class ClipboardListenerModule(reactContext: ReactApplicationContext) : ReactCont
             return
         }
 
+        // Existing clipboard content is a baseline, not a fresh copy. On newer
+        // Android versions background access may be denied; the foreground
+        // share activity also records a baseline when a share is accepted.
+        try {
+            ClipboardObservations.baseline(clipboardManager.primaryClip, reactApplicationContext.contentResolver)
+        } catch (_: SecurityException) {}
+
         // 1) Clipboard listener
         listener = ClipboardManager.OnPrimaryClipChangedListener {
-            val clip = clipboardManager.primaryClip
-            if (clip != null && clip.itemCount > 0) {
-
-                val description = clip.description
-                if (description != null) { 
-
-                    val mimeType = description.getMimeType(0)
-                    if (mimeType != null) {
-                        
-                        val item = clip.getItemAt(0)
-                        val params: WritableMap = Arguments.createMap()
-                        
-                        if (mimeType.startsWith("text/") && item.text != null) {
-                            // Text
-                            params.putString("content", item.text.toString())
-                            params.putString("type", "text")
-                        }
-                        else if (mimeType.startsWith("image/") && item.uri != null) {
-                            // Image
-                            params.putString("content", item.uri.toString())
-                            params.putString("type", "image")
-                        }
-                        else if (item.uri != null) {
-                            // Files
-                            params.putString("content", item.uri.toString())
-                            params.putString("type", "files")
-                        }
-
-                        sendEventToJS(params)
+            try {
+                ClipboardObservations.observe(clipboardManager.primaryClip, reactApplicationContext.contentResolver)
+                    ?.let {
+                        if (!it.isEcho) PendingShares.clear()
+                        sendEventToJS(it.toMap())
                     }
-                }
+            } catch (e: Exception) {
+                android.util.Log.e("ClipCascade", "Failed to read clipboard", e)
             }
         }
         clipboardManager.addPrimaryClipChangedListener(listener)
@@ -156,4 +140,3 @@ class ClipboardListenerModule(reactContext: ReactApplicationContext) : ReactCont
         // Required for RN built-in Event Emitter Calls.
     }
 }
-

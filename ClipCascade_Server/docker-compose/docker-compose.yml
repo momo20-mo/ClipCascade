@@ -1,5 +1,3 @@
-version: '3.8'
-
 # # 🌐 GitHub Repository: https://github.com/Sathvik-Rao/ClipCascade
 # # 🐳 Docker Compose configuration for deploying ClipCascade Server.
 # # ⚠️ IMPORTANT: Update the default admin credentials after the first login.
@@ -10,7 +8,7 @@ version: '3.8'
 
 services:
   clipcascade:
-    image: sathvikrao/clipcascade:3.4.0
+    image: sathvikrao/clipcascade:3.5.0
     # # 🚀 If you want to always use the latest version of ClipCascade Server, uncomment the line below and comment out the line above.
     # # Note: If using 'latest', make sure all client devices are updated regularly to maintain compatibility.
     # image: sathvikrao/clipcascade:latest
